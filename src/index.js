@@ -57,4 +57,21 @@ router.add('GET', '/products/:productId', async (request, response) => {
 	}
 });
 
+router.add('DELETE', '/products/:productId', async (request, response) => {
+
+	try {
+	  const productId = request.params.productId;
+  
+	  const result = await faunaClient.query(
+		Delete(Ref(Collection('Products'), productId))
+	  );
+  
+	  response.send(200, result);
+  
+	} catch (error) {
+	  const faunaError = getFaunaError(error);
+	  response.send(faunaError.status, faunaError);
+	}
+});
+
 listen(router.run);
