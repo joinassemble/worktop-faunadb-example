@@ -1,7 +1,7 @@
 name = "01-worktop"
 main = "src/index.js"
 type = "javascript"
-compatibility_date = "2023-09-24"
+compatibility_date = "2023-09-04"
 
 [build]
 command = "npm run build"
