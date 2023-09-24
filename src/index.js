@@ -1,15 +1,17 @@
-/**
- * Welcome to Cloudflare Workers! This is your first worker.
- *
- * - Run `npx wrangler dev src/index.js` in your terminal to start a development server
- * - Open a browser tab at http://localhost:8787/ to see your worker in action
- * - Run `npx wrangler publish src/index.js --name my-worker` to publish your worker
- *
- * Learn more at https://developers.cloudflare.com/workers/
- */
+import {Router, listen} from 'worktop';
+import faunadb from 'faunadb';
+import {getFaunaError} from './utils.js';
 
-export default {
-	async fetch(request, env, ctx) {
-		return new Response("Hello World!");
-	},
-};
+const router = new Router();
+
+const faunaClient = new faunadb.Client({
+  secret: FAUNA_SECRET
+});
+
+const {Create, Collection, Match, Index, Get, Ref, Paginate, Sum, Delete, Add, Select, Let, Var, Update} = faunadb.query;
+
+router.add('GET', '/', async (request, response) => {
+  response.send(200, 'hello world');
+});
+
+listen(router.run);
