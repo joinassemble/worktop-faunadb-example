@@ -41,4 +41,20 @@ router.add('POST', '/products', async (request, response) => {
 	}
 });
 
+router.add('GET', '/products/:productId', async (request, response) => {
+	try {
+	  const productId = request.params.productId;
+  
+	  const result = await faunaClient.query(
+		Get(Ref(Collection('Products'), productId))
+	  );
+  
+	  response.send(200, result);
+  
+	} catch (error) {
+	  const faunaError = getFaunaError(error);
+	  response.send(faunaError.status, faunaError);
+	}
+});
+
 listen(router.run);
