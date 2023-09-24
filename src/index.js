@@ -1,7 +1,9 @@
 import {Router, listen} from 'worktop';
 import faunadb from 'faunadb';
-import {getFaunaError} from './utils.js';
 import {getProduct} from './products/get.js'
+import {addProduct} from './products/add.js'
+import {addQuantity} from './products/addQuantity.js';
+import { deleteProduct } from './products/delete.js';
 
 const router = new Router();
 
@@ -17,83 +19,10 @@ router.add('GET', '/', async (request, response) => {
 
 router.add('GET', '/products/:productId', getProduct);
 
-router.add('POST', '/products', async (request, response) => {
-	try {
-	  const {serialNumber, title, weightLbs} = await request.body();
-  
-	  const result = await faunaClient.query(
-		Create(
-		  Collection('Products'),
-		  {
-			data: {
-			  serialNumber,
-			  title,
-			  weightLbs,
-			  quantity: 0
-			}
-		  }
-		)
-	  );
-  
-	  response.send(200, {
-		productId: result.ref.id
-	  });
-	} catch (error) {
-	  const faunaError = getFaunaError(error);
-	  response.send(faunaError.status, faunaError);
-	}
-});
+router.add('POST', '/products', addProduct);
 
-router.add('PATCH', '/products/:productId/add-quantity', async (request, response) => {
+router.add('PATCH', '/products/:productId/add-quantity', addQuantity);
 
-	try {
-	  const productId = request.params.productId;
-	  const {quantity} = await request.body();
-  
-	  const result = await faunaClient.query(
-		Let(
-		  {
-			productRef: Ref(Collection('Products'), productId),
-			productDocument: Get(Var('productRef')),
-			currentQuantity: Select(['data', 'quantity'], Var('productDocument'))
-		  },
-		  Update(
-			Var('productRef'),
-			{
-			  data: {
-				quantity: Add(
-				  Var('currentQuantity'),
-				  quantity
-				)
-			  }
-			}
-		  )
-		)
-	  );
-  
-	  response.send(200, result);
-  
-	} catch (error) {
-	  const faunaError = getFaunaError(error);
-	  response.send(faunaError.status, faunaError);
-	}
-});
-
-router.add('DELETE', '/products/:productId', async (request, response) => {
-
-	try {
-	  const productId = request.params.productId;
-  
-	  const result = await faunaClient.query(
-		Delete(Ref(Collection('Products'), productId))
-	  );
-  
-	  response.send(200, result);
-  
-	} catch (error) {
-	  const faunaError = getFaunaError(error);
-	  response.send(faunaError.status, faunaError);
-	}
-});
+router.add('DELETE', '/products/:productId', deleteProduct);
 
 listen(router.run);
