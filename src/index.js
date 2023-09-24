@@ -1,7 +1,7 @@
 import {Router, listen} from 'worktop';
 import faunadb from 'faunadb';
-import {getProduct} from './products/get.js'
-import {addProduct,addQuantity} from './products/add.js'
+import {getProduct} from './products/view.js'
+import {addProduct,addQuantity} from './products/create.js'
 import {deleteProduct} from './products/delete.js';
 
 const router = new Router();
