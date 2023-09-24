@@ -1,6 +1,7 @@
 import {Router, listen} from 'worktop';
 import faunadb from 'faunadb';
 import {getFaunaError} from './utils.js';
+import {getProduct} from './products/get.js'
 
 const router = new Router();
 
@@ -14,21 +15,7 @@ router.add('GET', '/', async (request, response) => {
   response.send(200, 'hello world');
 });
 
-router.add('GET', '/products/:productId', async (request, response) => {
-	try {
-	  const productId = request.params.productId;
-  
-	  const result = await faunaClient.query(
-		Get(Ref(Collection('Products'), productId))
-	  );
-  
-	  response.send(200, result);
-  
-	} catch (error) {
-	  const faunaError = getFaunaError(error);
-	  response.send(faunaError.status, faunaError);
-	}
-});
+router.add('GET', '/products/:productId', getProduct);
 
 router.add('POST', '/products', async (request, response) => {
 	try {
