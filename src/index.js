@@ -14,4 +14,31 @@ router.add('GET', '/', async (request, response) => {
   response.send(200, 'hello world');
 });
 
+router.add('POST', '/products', async (request, response) => {
+	try {
+	  const {serialNumber, title, weightLbs} = await request.body();
+  
+	  const result = await faunaClient.query(
+		Create(
+		  Collection('Products'),
+		  {
+			data: {
+			  serialNumber,
+			  title,
+			  weightLbs,
+			  quantity: 0
+			}
+		  }
+		)
+	  );
+  
+	  response.send(200, {
+		productId: result.ref.id
+	  });
+	} catch (error) {
+	  const faunaError = getFaunaError(error);
+	  response.send(faunaError.status, faunaError);
+	}
+});
+
 listen(router.run);
