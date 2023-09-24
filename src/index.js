@@ -14,6 +14,22 @@ router.add('GET', '/', async (request, response) => {
   response.send(200, 'hello world');
 });
 
+router.add('GET', '/products/:productId', async (request, response) => {
+	try {
+	  const productId = request.params.productId;
+  
+	  const result = await faunaClient.query(
+		Get(Ref(Collection('Products'), productId))
+	  );
+  
+	  response.send(200, result);
+  
+	} catch (error) {
+	  const faunaError = getFaunaError(error);
+	  response.send(faunaError.status, faunaError);
+	}
+});
+
 router.add('POST', '/products', async (request, response) => {
 	try {
 	  const {serialNumber, title, weightLbs} = await request.body();
@@ -35,39 +51,6 @@ router.add('POST', '/products', async (request, response) => {
 	  response.send(200, {
 		productId: result.ref.id
 	  });
-	} catch (error) {
-	  const faunaError = getFaunaError(error);
-	  response.send(faunaError.status, faunaError);
-	}
-});
-
-router.add('GET', '/products/:productId', async (request, response) => {
-	try {
-	  const productId = request.params.productId;
-  
-	  const result = await faunaClient.query(
-		Get(Ref(Collection('Products'), productId))
-	  );
-  
-	  response.send(200, result);
-  
-	} catch (error) {
-	  const faunaError = getFaunaError(error);
-	  response.send(faunaError.status, faunaError);
-	}
-});
-
-router.add('DELETE', '/products/:productId', async (request, response) => {
-
-	try {
-	  const productId = request.params.productId;
-  
-	  const result = await faunaClient.query(
-		Delete(Ref(Collection('Products'), productId))
-	  );
-  
-	  response.send(200, result);
-  
 	} catch (error) {
 	  const faunaError = getFaunaError(error);
 	  response.send(faunaError.status, faunaError);
@@ -99,6 +82,23 @@ router.add('PATCH', '/products/:productId/add-quantity', async (request, respons
 			}
 		  )
 		)
+	  );
+  
+	  response.send(200, result);
+  
+	} catch (error) {
+	  const faunaError = getFaunaError(error);
+	  response.send(faunaError.status, faunaError);
+	}
+});
+
+router.add('DELETE', '/products/:productId', async (request, response) => {
+
+	try {
+	  const productId = request.params.productId;
+  
+	  const result = await faunaClient.query(
+		Delete(Ref(Collection('Products'), productId))
 	  );
   
 	  response.send(200, result);
