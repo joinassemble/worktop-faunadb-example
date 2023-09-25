@@ -1,6 +1,6 @@
 import {Router, listen} from 'worktop';
 import faunadb from 'faunadb';
-import {getProduct} from './products/view.js'
+import {getAllProduct,getProduct} from './products/view.js'
 import {addProduct,addQuantity} from './products/create.js'
 import {deleteProduct} from './products/delete.js';
 
@@ -13,6 +13,8 @@ const faunaClient = new faunadb.Client({
 router.add('GET', '/', async (request, response) => {
   response.send(200, 'hello world');
 });
+
+router.add('GET', '/products', getAllProduct);
 
 router.add('GET', '/products/:productId', getProduct);
 
