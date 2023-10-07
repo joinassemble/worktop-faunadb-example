@@ -24,6 +24,7 @@ export async function getAllProduct(request, response) {
 			const productId = Object.values(item.ref)[0].id;
 			const product = item['data'];
 			product['id'] = productId;
+			console.log('product id: ', productId);
 			products.push(product);
 		}
 
