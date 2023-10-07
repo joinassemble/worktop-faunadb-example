@@ -6,10 +6,6 @@ import {deleteProduct} from './products/delete.js';
 
 const router = new Router();
 
-const faunaClient = new faunadb.Client({
-  secret: FAUNA_SECRET
-});
-
 router.add('GET', '/', async (request, response) => {
   response.send(200, 'hello world');
 });
