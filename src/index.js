@@ -1,5 +1,4 @@
 import {Router, listen} from 'worktop';
-import faunadb from 'faunadb';
 import {getAllProduct,getProduct} from './products/view.js'
 import {addProduct,addQuantity} from './products/create.js'
 import {deleteProduct} from './products/delete.js';
